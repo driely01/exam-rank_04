@@ -21,7 +21,8 @@ typedef struct s_tree {
 
 int	execution(t_tree *root, char **env);
 
-int ft_strlen(char *str) {
+int ft_strlen(char *str)
+{
 	int i = 0;
 
 	while(str && str[i]) {
@@ -30,7 +31,8 @@ int ft_strlen(char *str) {
 	return (i);
 }
 
-int	ft_strcmp(char *s1, char *s2) {
+int	ft_strcmp(char *s1, char *s2)
+{
 	size_t			i;
 
 	i = 0;
@@ -44,7 +46,8 @@ int	ft_strcmp(char *s1, char *s2) {
 	return (0);
 }
 
-int	count_command(char **av, int i) {
+int	count_command(char **av, int i)
+{
 	int count;
 
 	count = 0;
@@ -61,14 +64,14 @@ int	count_command(char **av, int i) {
 	return (count);
 }
 
-void	skip_pipes_seq(char **av, int *i) {
-	while (av[*i] && ((!ft_strcmp(av[*i], ";") && ft_strlen(av[*i]) == 1) || (!ft_strcmp(av[*i], "|") && ft_strlen(av[*i]) == 1))) {
-		
+void	skip_pipes_seq(char **av, int *i)
+{
+	while (av[*i] && ((!ft_strcmp(av[*i], ";") && ft_strlen(av[*i]) == 1) || (!ft_strcmp(av[*i], "|") && ft_strlen(av[*i]) == 1)))
 		(*i)++;
-	}
 }
 
-int	peek(char **av, int i) {
+int	peek(char **av, int i)
+{
 	while (av[i] && ((ft_strcmp(av[i], ";") && ft_strlen(av[i]) != 1) || (ft_strcmp(av[i], "|") && ft_strlen(av[i]) != 1))) {
 
 		i++;
@@ -80,8 +83,8 @@ int	peek(char **av, int i) {
 	return (-1);
 }
 
-char	*ft_strdup(char *str) {
-
+char	*ft_strdup(char *str)
+{
 	int		i;
 	int		lenght;
 	char	*tmp;
@@ -101,7 +104,8 @@ char	*ft_strdup(char *str) {
 }
 
 
-t_tree	*new_command(char **av, int *i) {
+t_tree	*new_command(char **av, int *i)
+{
 	t_tree	*head;
 	int		lenght;
 	int		j;
@@ -126,7 +130,8 @@ t_tree	*new_command(char **av, int *i) {
 	return (head);
 }
 
-t_tree	*new_pipe(t_tree **root, t_tree *right_cmd) {
+t_tree	*new_pipe(t_tree **root, t_tree *right_cmd)
+{
 	t_tree	*head;
 
 	head = malloc(sizeof(t_tree));
@@ -137,7 +142,8 @@ t_tree	*new_pipe(t_tree **root, t_tree *right_cmd) {
 	return (head);
 }
 
-t_tree	*new_sequance(t_tree **root, t_tree *right_pipe) {
+t_tree	*new_sequance(t_tree **root, t_tree *right_pipe)
+{
 
 	t_tree	*head;
 
@@ -151,7 +157,8 @@ t_tree	*new_sequance(t_tree **root, t_tree *right_pipe) {
 	return (head);
 }
 
-t_tree	*pipe_line(t_tree **root, char **av, int *i) {
+t_tree	*pipe_line(t_tree **root, char **av, int *i)
+{
 	t_tree	*right_cmd;
 
 	right_cmd = NULL;
@@ -168,7 +175,8 @@ t_tree	*pipe_line(t_tree **root, char **av, int *i) {
 	return (*root);
 }
 
-void	sequance(t_tree **root, char **av, int *i) {
+void	sequance(t_tree **root, char **av, int *i)
+{
 	t_tree	*right_pipe;
 
 	right_pipe = NULL;
@@ -182,7 +190,8 @@ void	sequance(t_tree **root, char **av, int *i) {
 	}
 }
 
-void	parser(t_tree **root, char **av) {
+void	parser(t_tree **root, char **av)
+{
 	int	i;
 	int	j;
 
@@ -199,13 +208,15 @@ void	parser(t_tree **root, char **av) {
 	}
 }
 
-void	print_tree(t_tree *root) {
+void	print_tree(t_tree *root)
+{
 	int i;
 	 
 	i = 0;
-	if (root->type == CMD) {
-		while (root->cmd[i]) {
-
+	if (root->type == CMD)
+	{
+		while (root->cmd[i])
+		{
 			printf("cmd: %s\n", root->cmd[i++]);
 		}
 		return ;
@@ -214,7 +225,8 @@ void	print_tree(t_tree *root) {
 	print_tree(root->right_child);
 }
 
-int	execute_cd(t_tree *root) {
+int	execute_cd(t_tree *root)
+{
 	int i;
 
 	i = 0;
@@ -231,13 +243,12 @@ int	execute_cd(t_tree *root) {
 	return (0);
 }
 
-int execute_command(t_tree *root, char **env) {
+int execute_command(t_tree *root, char **env)
+{
 	int pid;
 
-	if (!ft_strcmp(root->cmd[0], "cd") && ft_strlen(root->cmd[0]) == 2) {
-
+	if (!ft_strcmp(root->cmd[0], "cd") && ft_strlen(root->cmd[0]) == 2)
 		return (execute_cd(root));
-	}
 	pid = fork();
 	if (pid == -1) {
 		printf("error fork\n");
@@ -255,7 +266,8 @@ int execute_command(t_tree *root, char **env) {
 	return (0);
 }
 
-int execute_pipe(t_tree *root, char **env) {
+int execute_pipe(t_tree *root, char **env)
+{
 	int fd[2];
 	int pid;
 
@@ -297,26 +309,26 @@ int execute_pipe(t_tree *root, char **env) {
 	return (0);
 }
 
-int execute_sequance(t_tree *root, char **env) {
-	execution(root->left_child, env);
-	execution(root->right_child, env);
+int execute_sequance(t_tree *root, char **env)
+{
+	return (execution(root->left_child, env));
+	return (execution(root->right_child, env));
 	return (0);
 }
 
-int	execution(t_tree *root, char **env) {
-
-	if (root->type == SEQ) {
-		execute_sequance(root, env);
-	} else if (root->type == PIPE) {
-		execute_pipe(root, env);
-	} else {
-		execute_command(root, env);
-	}
+int	execution(t_tree *root, char **env)
+{
+	if (root->type == SEQ)
+		return (execute_sequance(root, env));
+	else if (root->type == PIPE)
+		return (execute_pipe(root, env));
+	else 
+		return (execute_command(root, env));
 	return (0);
 }
 
-int main(int ac, char **av, char **env) {
-
+int main(int ac, char **av, char **env)
+{
 	t_tree	*root;
 	int		i;
 
@@ -324,7 +336,8 @@ int main(int ac, char **av, char **env) {
 	root = NULL;
 	if (ac > 1) {
 		parser(&root, av);
-		execution(root, env);
+		if (execution(root, env) == -1)
+			return (1);
 	} else 
 		return (1);
 	return (0);
